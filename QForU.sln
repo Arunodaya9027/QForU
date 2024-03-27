@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.33529.622
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtractQuestionProject", "ExtractQuestionProject\ExtractQuestionProject.csproj", "{000F0ACA-0AFC-464C-B451-E13FA392255B}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "LeetcodeScrapper", "..\LeetcodeScrapper\LeetcodeScrapper\LeetcodeScrapper.pyproj", "{F2AA29CA-F025-4F59-BD6C-067BAAE4B03E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{000F0ACA-0AFC-464C-B451-E13FA392255B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{000F0ACA-0AFC-464C-B451-E13FA392255B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{000F0ACA-0AFC-464C-B451-E13FA392255B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{000F0ACA-0AFC-464C-B451-E13FA392255B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2AA29CA-F025-4F59-BD6C-067BAAE4B03E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2AA29CA-F025-4F59-BD6C-067BAAE4B03E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BB0D431C-7C1B-45A9-AD52-447BA537AE58}
+	EndGlobalSection
+EndGlobal

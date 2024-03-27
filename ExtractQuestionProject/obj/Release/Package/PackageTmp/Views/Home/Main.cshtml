@@ -1,0 +1,309 @@
+﻿
+@{
+    ViewBag.Title = "Main";
+}
+
+<style>
+    .pagination {
+        display: inline-block;
+        padding-left: 0;
+        margin: 20px 0;
+        border-radius: 4px;
+    }
+
+        .pagination > li {
+            display: inline;
+        }
+
+            .pagination > li > a,
+            .pagination > li > span {
+                position: relative;
+                float: left;
+                padding: 6px 12px;
+                margin-left: -1px;
+                line-height: 1.42857143;
+                color: #337ab7;
+                text-decoration: none;
+                background-color: #fff;
+                border: 1px solid #ddd;
+            }
+
+            .pagination > li:first-child > a,
+            .pagination > li:first-child > span {
+                margin-left: 0;
+                border-top-left-radius: 4px;
+                border-bottom-left-radius: 4px;
+            }
+
+            .pagination > li:last-child > a,
+            .pagination > li:last-child > span {
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 4px;
+            }
+
+            .pagination > li > a:focus,
+            .pagination > li > a:hover,
+            .pagination > li > span:focus,
+            .pagination > li > span:hover {
+                z-index: 2;
+                color: #23527c;
+                background-color: #eee;
+                border-color: #ddd;
+            }
+
+        .pagination > .active > a,
+        .pagination > .active > a:focus,
+        .pagination > .active > a:hover,
+        .pagination > .active > span,
+        .pagination > .active > span:focus,
+        .pagination > .active > span:hover {
+            z-index: 3;
+            color: #fff;
+            cursor: default;
+            background-color: #337ab7;
+            border-color: #337ab7;
+        }
+
+        .pagination > .disabled > a,
+        .pagination > .disabled > a:focus,
+        .pagination > .disabled > a:hover,
+        .pagination > .disabled > span,
+        .pagination > .disabled > span:focus,
+        .pagination > .disabled > span:hover {
+            color: #777;
+            cursor: not-allowed;
+            background-color: #fff;
+            border-color: #ddd;
+        }
+
+    .pagination-lg > li > a,
+    .pagination-lg > li > span {
+        padding: 10px 16px;
+        font-size: 18px;
+        line-height: 1.3333333;
+    }
+
+    .pagination-lg > li:first-child > a,
+    .pagination-lg > li:first-child > span {
+        border-top-left-radius: 6px;
+        border-bottom-left-radius: 6px;
+    }
+
+    .pagination-lg > li:last-child > a,
+    .pagination-lg > li:last-child > span {
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
+    }
+
+    .pagination-sm > li > a,
+    .pagination-sm > li > span {
+        padding: 5px 10px;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .pagination-sm > li:first-child > a,
+    .pagination-sm > li:first-child > span {
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+    }
+
+    .pagination-sm > li:last-child > a,
+    .pagination-sm > li:last-child > span {
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+    }
+
+    th {
+        background-color: aliceblue;
+        font-weight: bold;
+        font-size: large
+    }
+
+    /*.modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }*/
+    .modal {
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .modal-content {
+        width: 150%;
+        max-height: 80%;
+        overflow-y: auto;
+        background-color: #fff;
+        padding: 20px;
+    }
+
+    .modal-body {
+        overflow: auto;
+    }
+
+    .html-content {
+        word-wrap: break-word;
+        line-height: 1.5;
+    }
+
+    #close {
+        right: 0;
+    }
+
+    .btn {
+        border: none
+    }
+</style>
+
+<script src="~/Scripts/cdnjs.cloudflare.com_ajax_libs_angular.js_1.8.2_angular.min.js"></script>
+<script src="~/Scripts/code.angularjs.org_1.8.2_angular-resource.js"></script>
+<script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-1.0.3.js"></script>
+<script src="~/Scripts/cdn.jsdelivr.net_npm_angular_angular.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+<script>
+    var app = angular.module('myapp', ['ui.bootstrap', 'ngResource']);
+
+    app.controller("main", function ($scope, $filter, $sce, myService) {
+        myService.UserLogin("/Home/FetchTODOAllData").then(function (d) {
+            $scope.questions_all = d.data;
+            console.log($scope.questions_all);
+            $scope.page = 1;
+            $scope.displayItems = $scope.questions_all.slice(0, 50);
+            $scope.$watchGroup(['master', 'search.RollNo', 'search.Name', 'search.MobileNo', 'search.Address', 'search.Course'], function () {
+                $scope.filteredQuestions_all = $filter('filter')($scope.filteredQuestions_all, $scope.master);      //filtering as per master field
+            });
+        });
+
+        $scope.pageChanged = function () {
+            var startPos = ($scope.page - 1) * 50;
+            //$scope.displayItems = $scope.totalItems.slice(startPos, startPos + 5);
+            console.log($scope.page);
+        };
+
+        $scope.openQuestion = function (ques) {
+
+            $('#questionPopup').modal('show');
+            document.body.style.overflow = 'hidden';
+            var user = { "QuestionLink": ques.QuestionLink };
+            myService.UserLogin("/Home/FetchTODOQuestionData", user).then(function (d) {
+                $scope.question = d.data;
+                console.log($scope.question);
+                $scope.Problem = $scope.question[0].QuestionName;
+                $scope.Description = $sce.trustAsHtml($scope.question[0].Description);
+            });
+
+        }
+
+        $scope.closeQuestion = function () {
+            $('#questionPopup').modal('hide');
+            document.body.style.overflow = '';
+        }
+
+        $scope.choice = 0;
+        $scope.favourites = function () {
+            if ($scope.choice == 0)
+                $scope.choice = 1;
+            else
+                $scope.choice = 0;
+        }
+    });
+    app.service("myService", function ($http) {
+        this.UserLogin = function (Path, user) {
+            var response = $http({
+                method: "post",
+                url: Path,
+                data: JSON.stringify(user),
+                dataType: "json"
+            });
+            return response;
+        }
+    });
+</script>
+
+<div class="card" ng-app="myapp" ng-controller="main">
+
+    <div class="card-body">
+
+        <div class="card-title text-center">
+            <h1>GLA Practice</h1>
+        </div>
+
+        <div class="input-group">
+            <i class="fa-duotone fa-magnifying-glass input-group-text" style="--fa-primary-color: #000000; --fa-secondary-color: #5d89d5; --fa-secondary-opacity: 0.7;"></i>
+            <input id="search-box" type="text" ng-model="master" class="form-control text-capitalize" placeholder="Search Records" />
+        </div>
+
+        @*Bootstrap modal*@
+        <div class="modal fade" aria-hidden="true" data-bs-keyboard="false" data-bs-backdrop="static" id="questionPopup" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="contentinfo">
+                <div class="modal-content">
+                    <div>
+                        <button id="close" type="button" class="btn btn-rounded btn-danger text-center col-md-1 ms-4" data-dismiss="modal" aria-label="Close" ng-click="closeQuestion()">
+                            Close
+                        </button>
+                    </div>
+                    <div class="modal-header">
+                        <h2 class="modal-title text-center text-capitalize">{{ Problem }}</h2>
+                    </div>
+                    <div class="modal-body">
+                        <div class="html-content" ng-bind-html="Description">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+
+            <table id="printTable" class="table table-striped table-bordered">
+                <thead>
+                    <tr style="background-color:seashell">
+                        <th style="text-align:center">
+                            <b>S.No.</b>
+                        </th>
+                        <th style="text-align: center">
+                            <b>Question</b>
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr ng-repeat="ques in filteredQuestions_all = (questions_all | filter : master) | limitTo:50:50*(page-1)" style="margin-bottom:25px">
+                        @*<tr ng-repeat="ques in questions_all | limitTo:50:50*(page-1)" style="margin-bottom:25px">*@
+                        <td id="id" style="text-align:center">{{ $index+1+(50*(page-1)) }}</td>
+                        <td id="question" ng-click="openQuestion(ques)"  style="text-transform: capitalize">{{ ques.QuestionName }}</td>
+                        <td class="row" style="margin:0; padding:0; width:9%">
+                            <button class="btn btn-success mt-1 mb-1 ms-3 me-1 col-sm-6" style="width:47%" ng-click="editQuestion(ques.QuestionLink)"><i class="fa-solid fa-pen" style="color: #ffffff;"></i></button>
+                            <button class="btn btn-warning mt-1 mb-1 ms-1 me-3 col-sm-6" style="margin-left:6%; width:47%;" ng-click="favourites(ques.QuestionLink)" ng-if="choice == 1"><i class="fa-solid fa-heart" style="color: #ffffff;"></i></button>
+                            <button class="btn btn-warning mt-1 mb-1 ms-1 me-3 col-sm-6" style="margin-left: 6%; width: 47%;" ng-click="favourites(ques.QuestionLink)" ng-if="choice != 1"><i class="fa-regular fa-heart" style="color: #ffffff;"></i></button>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <div class="align-items-center">
+                <uib-pagination class="pagination-sm pagination" total-items="filteredQuestions_all.length" ng-model="page"
+                                ng-change="pageChanged()" previous-text="&lsaquo;" next-text="&rsaquo;" max-size="6" items-per-page=50 boundary-links="true" first-text="First" last-text="Last"></uib-pagination>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
